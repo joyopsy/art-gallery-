@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="description" content="Darshini Art Gallery: textural paintings in gold leaf, plaster and pigment. Browse the gallery, commission a work, and get in touch.">
+<title>Darshini Art Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout concept: a quiet gallery wall. Generous white space, one tall featured work beside a small
+   typographic block, a masonry hang for the collection, then slow, text-led pages for the rest. */
+:root {
+  --bg: #F4F0E9;
+  --paper: #FBF9F5;
+  --ink: #242220;
+  --muted: #6D685F;
+  --line: #DCD4C6;
+  --gold: #9C7A45;
+  --wall: #EAE4D8;
+  --display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --text: "Jost", "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A1917; --paper: #222120; --ink: #EDE8DF; --muted: #A39D90;
+    --line: #373430; --gold: #C9A46A; --wall: #151413; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A1917; --paper: #222120; --ink: #EDE8DF; --muted: #A39D90;
+  --line: #373430; --gold: #C9A46A; --wall: #151413; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--text); font-weight: 300; font-size: 16px; line-height: 1.7;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+img { display: block; }
+:focus-visible { outline: 1.5px solid var(--gold); outline-offset: 3px; }
+::selection { background: var(--gold); color: #fff; }
+
+.wrap {
+  width: 100%; max-width: 1360px; margin-inline: auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 900px) { .wrap { padding-left: max(48px, env(safe-area-inset-left, 0px)); padding-right: max(48px, env(safe-area-inset-right, 0px)); } }
+
+.eyebrow { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+h1, h2, h3 { font-family: var(--display); font-weight: 300; line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h2 { font-size: clamp(2.3rem, 5.2vw, 4.2rem); }
+h2 em, h1 em, h3 em { font-style: italic; font-weight: 300; }
+p { margin: 0 0 1.1em; max-width: 62ch; }
+.lede { font-family: var(--display); font-size: clamp(1.35rem, 2.2vw, 1.8rem); line-height: 1.4; font-weight: 300; color: var(--ink); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 12px; padding: 15px 28px;
+  border: 1px solid var(--ink); background: transparent; text-decoration: none;
+  font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase; font-weight: 400;
+  transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn:hover { background: var(--ink); color: var(--bg); }
+.btn.solid { background: var(--ink); color: var(--bg); }
+.btn.solid:hover { background: var(--gold); border-color: var(--gold); color: #fff; }
+.btn.small { padding: 11px 18px; font-size: 10.5px; }
+.link { font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 4px; background: none; border-top: 0; border-left: 0; border-right: 0; }
+.link:hover { color: var(--gold); }
+
+/* ---------- Header ---------- */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid transparent; transition: border-color .3s; }
+.site-header.scrolled { border-bottom-color: var(--line); }
+.bar { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+.brand { font-family: var(--display); font-size: 1.55rem; font-weight: 400; letter-spacing: .02em; text-decoration: none; white-space: nowrap; background: none; border: 0; padding: 0; }
+.brand small { display: block; font-family: var(--text); font-size: 9px; letter-spacing: .34em; text-transform: uppercase; color: var(--muted); margin-top: -2px; }
+.nav { display: none; gap: 30px; align-items: center; }
+.nav a { font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; position: relative; padding: 6px 0; }
+.nav a::after { content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
+.nav a:hover::after, .nav a.on::after { transform: scaleX(1); }
+.tools { display: flex; align-items: center; gap: 6px; }
+.icon-btn { width: 42px; height: 42px; display: grid; place-items: center; background: none; border: 0; }
+.icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.3; }
+@media (min-width: 1020px) { .nav { display: flex; } .burger { display: none; } }
+
+.menu { position: fixed; inset: 0; z-index: 70; background: var(--bg); display: flex; flex-direction: column; padding: calc(env(safe-area-inset-top, 0px) + 18px) max(24px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 28px) max(24px, env(safe-area-inset-left, 0px)); transform: translateY(-100%); transition: transform .6s var(--ease); visibility: hidden; }
+.menu.open { transform: none; visibility: visible; }
+.menu-top { display: flex; justify-content: space-between; align-items: center; }
+.menu nav { margin: auto 0; display: grid; gap: 4px; }
+.menu nav a { font-family: var(--display); font-size: clamp(2.4rem, 11vw, 3.6rem); font-weight: 300; text-decoration: none; line-height: 1.25; }
+.menu nav a i { color: var(--gold); }
+.menu-foot { font-size: 12px; letter-spacing: .14em; color: var(--muted); }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: clamp(28px, 5vw, 64px) clamp(56px, 8vw, 110px); }
+.hero-grid { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 72px; } }
+.hero-copy .eyebrow { display: block; margin-bottom: 28px; animation: rise 1.1s var(--ease) both .1s; }
+.hero h1 { font-size: clamp(3.2rem, 8.4vw, 7.4rem); animation: rise 1.2s var(--ease) both .2s; }
+.hero h1 em { color: var(--gold); }
+.hero-copy .lede { margin-top: 32px; max-width: 30ch; animation: rise 1.2s var(--ease) both .4s; }
+.hero-cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 14px; animation: rise 1.2s var(--ease) both .55s; }
+@keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+.hero-art { display: grid; justify-items: center; gap: 22px; animation: rise 1.4s var(--ease) both .3s; }
+.stage { position: relative; width: min(100%, calc(74vh * 2 / 3), 520px); aspect-ratio: 2 / 3; background: var(--wall); box-shadow: 0 40px 70px -30px rgba(0,0,0,.45), 0 10px 24px -12px rgba(0,0,0,.25); cursor: zoom-in; overflow: hidden; }
+.stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.1s var(--ease), transform 1.6s var(--ease); transform: scale(1.03); }
+.stage img.show { opacity: 1; transform: none; }
+.stage-cap { width: min(100%, 520px); display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+.stage-cap h3 { font-size: 1.6rem; font-style: italic; }
+.stage-cap span { display: block; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+.dots { display: flex; gap: 10px; }
+.dots button { width: 34px; height: 24px; background: none; border: 0; position: relative; }
+.dots button::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 1px; background: var(--line); }
+.dots button.on::after { background: var(--gold); height: 2px; top: 10px; }
+
+/* ---------- Sections ---------- */
+section { padding-block: clamp(72px, 10vw, 140px); }
+.sec-head { display: grid; gap: 18px; margin-bottom: clamp(36px, 5vw, 64px); }
+.sec-head p { color: var(--muted); }
+@media (min-width: 900px) { .sec-head.split { grid-template-columns: 1fr 1fr; align-items: end; } }
+
+/* About */
+.about { background: var(--paper); }
+.about-grid { display: grid; gap: 48px; }
+@media (min-width: 900px) { .about-grid { grid-template-columns: .85fr 1.15fr; gap: 90px; } }
+.portrait { position: relative; aspect-ratio: 4 / 5; background: var(--wall); overflow: hidden; }
+.portrait img { width: 100%; height: 100%; object-fit: cover; }
+.portrait figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 16px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.5)); }
+.about-copy .lede { margin-bottom: 28px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 40px 0; padding-block: 26px; border-block: 1px solid var(--line); }
+.stats b { display: block; font-family: var(--display); font-weight: 300; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.timeline { display: grid; gap: 0; }
+.timeline div { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 14px; padding-block: 16px; border-top: 1px solid var(--line); }
+.timeline time { font-family: var(--display); font-size: 1.25rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.timeline p { margin: 0; font-size: 15px; }
+.materials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+.materials span { padding: 7px 14px; border: 1px solid var(--line); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* Gallery */
+.filters { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-bottom: 40px; }
+.filters button { background: none; border: 0; padding: 8px 0; font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
+.filters button:hover { color: var(--ink); }
+.filters button.on { color: var(--ink); border-bottom-color: var(--gold); }
+.masonry { columns: 1; column-gap: 36px; }
+@media (min-width: 620px) { .masonry { columns: 2; } }
+@media (min-width: 1040px) { .masonry { columns: 3; column-gap: 44px; } }
+.card { break-inside: avoid; margin: 0 0 clamp(34px, 5vw, 56px); display: block; width: 100%; text-align: left; background: none; border: 0; padding: 0; }
+.card .frame { position: relative; overflow: hidden; background: var(--wall); box-shadow: 0 22px 36px -24px rgba(0,0,0,.4); }
+.card img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transition: transform 1.3s var(--ease), opacity .8s; opacity: 0; }
+.card img.loaded { opacity: 1; }
+.card.in img.loaded { transform: scale(1); }
+.card:hover.in img.loaded { transform: scale(1.035); }
+.card .view { position: absolute; left: 50%; bottom: 20px; transform: translate(-50%, 14px); opacity: 0; background: var(--bg); color: var(--ink); padding: 10px 18px; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; transition: opacity .4s, transform .5s var(--ease); white-space: nowrap; }
+.card:hover .view, .card:focus-visible .view { opacity: 1; transform: translate(-50%, 0); }
+@media (hover: none) { .card .view { display: none; } }
+.card .meta { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; padding-top: 16px; }
+.card h3 { font-size: 1.55rem; font-style: italic; }
+.card .meta span { font-size: 12px; color: var(--muted); letter-spacing: .06em; text-align: right; }
+.card .sold { color: var(--gold); }
+
+/* Artwork detail */
+.work { padding-block: 36px clamp(70px, 9vw, 120px); }
+.crumb { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+.work-grid { display: grid; gap: 44px; }
+@media (min-width: 960px) { .work-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 80px; align-items: start; } .work-img { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 96px); } }
+.work-img { background: var(--wall); display: grid; place-items: center; padding: clamp(18px, 4vw, 56px); cursor: zoom-in; position: relative; }
+.work-img img { max-width: 100%; max-height: 78vh; width: auto; height: auto; box-shadow: 0 40px 70px -30px rgba(0,0,0,.5); }
+.work-img .fs-hint { position: absolute; right: 14px; bottom: 12px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.work-info h1 { font-size: clamp(2.8rem, 6vw, 4.6rem); font-style: italic; margin: 14px 0 28px; }
+.specs { margin: 0 0 32px; padding: 0; display: grid; border-top: 1px solid var(--line); }
+.specs div { display: grid; grid-template-columns: 110px minmax(0, 1fr); padding-block: 13px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.specs dt { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.specs dd { margin: 0; }
+.work-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: clamp(56px, 8vw, 96px); border-top: 1px solid var(--line); padding-top: 26px; }
+.pager button { background: none; border: 0; text-align: left; padding: 0; display: grid; gap: 4px; }
+.pager button:last-child { text-align: right; }
+.pager small { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+.pager b { font-family: var(--display); font-weight: 300; font-style: italic; font-size: clamp(1.4rem, 3vw, 2.2rem); }
+.pager button:hover b { color: var(--gold); }
+
+/* Commission */
+.commission { background: var(--ink); color: var(--bg); --line: rgba(255,255,255,.18); --muted: #b9b3a6; }
+:root[data-theme="dark"] .commission, :root:not([data-theme="light"]) .commission { }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .commission { background: #0F0E0D; color: #EDE8DF; } }
+:root[data-theme="dark"] .commission { background: #0F0E0D; color: #EDE8DF; }
+.commission .eyebrow { color: #C9A46A; }
+.com-grid { display: grid; gap: 56px; }
+@media (min-width: 960px) { .com-grid { grid-template-columns: .8fr 1.2fr; gap: 100px; } }
+.steps { margin: 36px 0 0; padding: 0; list-style: none; display: grid; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 44px minmax(0, 1fr); padding-block: 18px; border-top: 1px solid var(--line); }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--display); color: #C9A46A; font-size: 1.2rem; }
+.steps b { font-weight: 400; display: block; letter-spacing: .04em; }
+.steps span { font-size: 14.5px; color: var(--muted); }
+form { display: grid; gap: 26px; }
+.row2 { display: grid; gap: 26px; }
+@media (min-width: 620px) { .row2 { grid-template-columns: 1fr 1fr; } }
+.field { display: grid; gap: 8px; min-width: 0; }
+.field label, .field .lab { font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  width: 100%; background: transparent; color: inherit; border: 0; border-bottom: 1px solid var(--line);
+  padding: 10px 0; font: inherit; font-size: 16px; border-radius: 0; outline: none; transition: border-color .3s;
+}
+.field select option { color: #222; }
+.field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+.field input:focus, .field select:focus, .field textarea:focus { border-bottom-color: #C9A46A; }
+.field .err { font-size: 12px; color: #E08A7A; min-height: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips input { position: absolute; opacity: 0; pointer-events: none; }
+.chips label { padding: 9px 16px; border: 1px solid var(--line); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--bg); cursor: pointer; transition: all .3s; }
+.commission .chips label { color: inherit; }
+.chips input:checked + label { background: #C9A46A; border-color: #C9A46A; color: #1a1815; }
+.chips input:focus-visible + label { outline: 1.5px solid #C9A46A; outline-offset: 2px; }
+.upload { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.upload .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.upload .thumbs img { width: 54px; height: 54px; object-fit: cover; }
+.commission .btn { border-color: currentColor; }
+.commission .btn:hover { background: #EDE8DF; color: #1a1815; }
+.commission .btn.solid { background: #C9A46A; border-color: #C9A46A; color: #1a1815; }
+.commission .btn.solid:hover { background: #EDE8DF; border-color: #EDE8DF; }
+.result { border: 1px solid #C9A46A; padding: clamp(22px, 4vw, 40px); display: grid; gap: 18px; }
+.result h3 { font-size: 2rem; font-style: italic; }
+.result pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: inherit; font-size: 14px; color: var(--muted); border-left: 1px solid var(--line); padding-left: 16px; }
+.result .acts { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Exhibitions */
+.tabs { display: flex; gap: 28px; margin-bottom: 20px; }
+.tabs button { background: none; border: 0; padding: 8px 0; font-family: var(--display); font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 300; color: var(--muted); border-bottom: 1px solid transparent; }
+.tabs button.on { color: var(--ink); border-bottom-color: var(--gold); }
+.ex { display: grid; gap: 6px 28px; padding-block: 26px; border-top: 1px solid var(--line); align-items: baseline; transition: padding .5s var(--ease); }
+.ex:last-child { border-bottom: 1px solid var(--line); }
+@media (min-width: 820px) { .ex { grid-template-columns: 200px minmax(0, 1fr) 260px; } .ex:hover { padding-left: 14px; } }
+.ex time { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-variant-numeric: tabular-nums; }
+.ex h3 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-style: italic; }
+.ex p { margin: 0; color: var(--muted); font-size: 14.5px; }
+.ex .where { font-size: 14px; }
+.ex .where small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+.tag { display: inline-block; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; border: 1px solid var(--gold); color: var(--gold); padding: 2px 9px; margin-left: 10px; vertical-align: middle; }
+.note { margin-top: 20px; font-size: 12.5px; color: var(--muted); }
+
+/* Contact */
+.contact { background: var(--paper); }
+.contact-grid { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+@media (min-width: 820px) { .contact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ccard { background: var(--paper); padding: 34px 28px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.ccard h3 { font-size: 1.9rem; font-style: italic; }
+.ccard .val { font-size: 15px; overflow-wrap: anywhere; user-select: all; }
+.ccard .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+footer { padding-block: 44px calc(44px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); font-size: 12px; letter-spacing: .1em; color: var(--muted); }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* ---------- Fullscreen viewer ---------- */
+.viewer { position: fixed; inset: 0; z-index: 100; background: #0C0B0A; color: #EDE8DF; display: none; touch-action: pan-y; }
+.viewer.open { display: block; animation: fade .5s var(--ease); }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.v-top { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: calc(env(safe-area-inset-top, 0px) + 10px) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(rgba(0,0,0,.6), transparent); }
+.v-top .t { min-width: 0; }
+.v-top .t b { font-family: var(--display); font-weight: 400; font-style: italic; font-size: 1.35rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.v-top .t span { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #A9A396; }
+.v-top .ctl { display: flex; flex-shrink: 0; }
+.viewer .icon-btn { color: #EDE8DF; }
+.v-stage { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; padding: calc(env(safe-area-inset-top, 0px) + 64px) max(16px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 56px) max(16px, env(safe-area-inset-left, 0px)); cursor: zoom-in; }
+.v-stage.zoom { cursor: zoom-out; }
+.v-stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform .5s var(--ease), opacity .35s; user-select: none; -webkit-user-drag: none; }
+.v-stage.zoom img { transform: scale(2.2); transition: transform .35s var(--ease); }
+.v-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 56px; height: 56px; }
+.v-nav.prev { left: max(8px, env(safe-area-inset-left, 0px)); } .v-nav.next { right: max(8px, env(safe-area-inset-right, 0px)); }
+.v-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; text-align: center; padding: 14px 16px calc(env(safe-area-inset-bottom, 0px) + 14px); font-size: 11px; letter-spacing: .22em; color: #A9A396; text-transform: uppercase; background: linear-gradient(transparent, rgba(0,0,0,.55)); font-variant-numeric: tabular-nums; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); transform: translate(-50%, 30px); opacity: 0; background: var(--ink); color: var(--bg); padding: 12px 22px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; z-index: 120; transition: all .5s var(--ease); pointer-events: none; }
+.toast.on { transform: translate(-50%, 0); opacity: 1; }
+
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="site-header" id="siteHeader">
+  <div class="wrap bar">
+    <a class="brand" href="#home" data-nav>Darshini<small>Art Gallery</small></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#home" data-nav>Home</a>
+      <a href="#about" data-nav>About</a>
+      <a href="#gallery" data-nav>Gallery</a>
+      <a href="#commissions" data-nav>Commissions</a>
+      <a href="#exhibitions" data-nav>Exhibitions</a>
+      <a href="#contact" data-nav>Contact</a>
+    </nav>
+    <div class="tools">
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle light or dark theme" title="Light / dark">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M3 8h18M3 16h18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="menu-top">
+    <span class="brand">Darshini Art Gallery</span>
+    <button class="icon-btn" id="menuClose" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  </div>
+  <nav aria-label="Menu">
+    <a href="#home" data-nav>Home</a>
+    <a href="#about" data-nav>About</a>
+    <a href="#gallery" data-nav>Gallery</a>
+    <a href="#commissions" data-nav>Commissions</a>
+    <a href="#exhibitions" data-nav>Exhibitions</a>
+    <a href="#contact" data-nav>Contact</a>
+  </nav>
+  <div class="menu-foot">Studio visits by appointment</div>
+</div>
+
+<main id="main">
+  <!-- HOME -->
+  <header class="hero" id="home">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Contemporary textural painting</span>
+        <h1>Light, <em>leaf</em> &amp; plaster</h1>
+        <p class="lede">Sculpted surfaces in gold leaf, lime and pigment. Each work is made by hand in the studio and built to change with the light of the room it hangs in.</p>
+        <div class="hero-cta">
+          <a class="btn solid" href="#gallery" data-nav>Enter the gallery</a>
+          <a class="btn" href="#commissions" data-nav>Commission a work</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="stage" id="stage" role="button" tabindex="0" aria-label="View featured painting fullscreen"></div>
+        <div class="stage-cap">
+          <div><h3 id="stageTitle"></h3><span id="stageMeta"></span></div>
+          <div class="dots" id="stageDots" role="tablist" aria-label="Featured works"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <figure class="portrait" style="margin:0">
+        <img id="portraitImg" alt="Placeholder portrait of the artist's studio wall" width="800" height="1000">
+        <figcaption>Studio, placeholder image</figcaption>
+      </figure>
+      <div class="about-copy">
+        <span class="eyebrow">About the artist</span>
+        <h2 style="margin:18px 0 30px">Surfaces that <em>hold</em> the light</h2>
+        <p class="lede">Darshini paints with her hands, a palette knife and a trowel. Her work sits between painting and relief, where plaster ridges, hammered bowls and fragments of leaf catch a different light at every hour.</p>
+        <p>She trained in fine art and spent a decade working with architects and interior designers on large commissioned surfaces before turning to a full-time studio practice. Her series return to a few quiet subjects: the orbit, the seam, the tide and the burst of light from a single point.</p>
+        <p>Every piece is built in layers. Lime plaster is troweled, combed and left to cure, then pigment, metal leaf and found forms are set into it. No two surfaces repeat, and the finish is sealed for long life on the wall.</p>
+        <div class="stats">
+          <div><b>14</b><span>Years in studio</span></div>
+          <div><b>320+</b><span>Works placed</span></div>
+          <div><b>18</b><span>Exhibitions</span></div>
+        </div>
+        <div class="timeline">
+          <div><time>2012</time><p>Completes a fine art degree and opens a shared studio.</p></div>
+          <div><time>2015</time><p>Begins working in lime plaster and metal leaf for private interiors.</p></div>
+          <div><time>2019</time><p>First solo exhibition. The orbit and seam series are born.</p></div>
+          <div><time>2023</time><p>Works enter collections in Mumbai, London and Dubai.</p></div>
+          <div><time>2026</time><p>Opens the studio for commissioned installations and private viewings.</p></div>
+        </div>
+        <div class="materials" aria-label="Materials">
+          <span>Gold leaf</span><span>Lime plaster</span><span>Pigment</span><span>Silver &amp; copper</span><span>Resin</span><span>Stone</span>
+        </div>
+        <p class="note">Biography and figures are placeholder text. Replace them with the artist's own.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div><span class="eyebrow">The collection</span><h2 style="margin-top:16px">Art <em>gallery</em></h2></div>
+        <p>Select any work to see it larger, read its details and view it fullscreen. All pieces shown are placeholder artwork.</p>
+      </div>
+      <div class="filters" id="filters" role="tablist" aria-label="Filter works"></div>
+      <div class="masonry" id="masonry"></div>
+    </div>
+  </section>
+
+  <!-- COMMISSIONS -->
+  <section class="commission" id="commissions">
+    <div class="wrap com-grid">
+      <div>
+        <span class="eyebrow">Commission work</span>
+        <h2 style="margin:16px 0 26px">A painting made <em>for your wall</em></h2>
+        <p style="color:var(--muted)">Tell us about the room, the light and the mood. We will reply with a concept, a price and a timeline, and you approve a sample before the full work begins.</p>
+        <ol class="steps">
+          <li><div><b>Conversation</b><span>Share your space, palette and ideas.</span></div></li>
+          <li><div><b>Concept and sample</b><span>A sketch and a texture sample on a small panel.</span></div></li>
+          <li><div><b>Creation</b><span>Typically four to eight weeks, with progress photos.</span></div></li>
+          <li><div><b>Delivery</b><span>Crated, insured and installed if you wish.</span></div></li>
+        </ol>
+      </div>
+      <div>
+        <form id="comForm" novalidate>
+          <div class="row2">
+            <div class="field"><label for="cName">Your name</label><input id="cName" autocomplete="name" required><span class="err" data-err="cName"></span></div>
+            <div class="field"><label for="cEmail">Email</label><input id="cEmail" type="email" autocomplete="email" required><span class="err" data-err="cEmail"></span></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="cPhone">WhatsApp (optional)</label><input id="cPhone" type="tel" autocomplete="tel" placeholder="+91 …"></div>
+            <div class="field"><label for="cSize">Approximate size</label>
+              <select id="cSize"><option>Small, up to 60 cm</option><option selected>Medium, 60 to 120 cm</option><option>Large, 120 to 200 cm</option><option>Statement, over 200 cm</option><option>Multi-panel set</option></select></div>
+          </div>
+          <div class="field"><span class="lab">Style</span>
+            <div class="chips" id="cStyle">
+              <input type="radio" name="style" id="s1" value="Gold &amp; metallic" checked><label for="s1">Gold &amp; metallic</label>
+              <input type="radio" name="style" id="s2" value="Monochrome"><label for="s2">Monochrome</label>
+              <input type="radio" name="style" id="s3" value="Colour"><label for="s3">Colour</label>
+              <input type="radio" name="style" id="s4" value="Surprise me"><label for="s4">Surprise me</label>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="cBudget">Budget</label>
+              <select id="cBudget"><option>Under ₹50,000</option><option selected>₹50,000 to ₹1,50,000</option><option>₹1,50,000 to ₹4,00,000</option><option>Above ₹4,00,000</option><option>Not sure yet</option></select></div>
+            <div class="field"><label for="cDate">Needed by</label><input id="cDate" type="date"></div>
+          </div>
+          <div class="field"><label for="cBrief">About the space and your idea</label><textarea id="cBrief" required placeholder="Room, wall colour, light, mood, any references you love…"></textarea><span class="err" data-err="cBrief"></span></div>
+          <div class="field"><span class="lab">Reference images (optional)</span>
+            <div class="upload">
+              <label class="btn small" for="cFiles" style="cursor:pointer">Add images</label>
+              <input id="cFiles" type="file" accept="image/*" multiple style="position:absolute;opacity:0;width:1px;height:1px">
+              <div class="thumbs" id="thumbs"></div>
+            </div>
+          </div>
+          <div><button class="btn solid" type="submit">Prepare my request</button></div>
+        </form>
+        <div class="result" id="comResult" hidden>
+          <h3>Your request is ready</h3>
+          <p style="margin:0">It has not been sent yet. Choose how you would like to send it to the studio. If you added reference images, attach them in the message.</p>
+          <pre id="comText"></pre>
+          <div class="acts">
+            <a class="btn solid small" id="comWa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+            <a class="btn small" id="comMail" href="#">Send by email</a>
+            <button class="btn small" id="comCopy" type="button">Copy request</button>
+            <button class="btn small" id="comEdit" type="button">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXHIBITIONS -->
+  <section id="exhibitions">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div><span class="eyebrow">Exhibitions</span><h2 style="margin-top:16px">On <em>view</em></h2></div>
+        <p>Where the work is shown, now and next. Venues and dates below are placeholders.</p>
+      </div>
+      <div class="tabs" id="exTabs" role="tablist">
+        <button class="on" data-tab="up" role="tab">Upcoming</button>
+        <button data-tab="past" role="tab">Past</button>
+      </div>
+      <div id="exList"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div><span class="eyebrow">Contact</span><h2 style="margin-top:16px">Let's <em>talk</em></h2></div>
+        <p>For purchases, commissions, press and studio visits. The studio usually replies within two working days. Contact details below are placeholders.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="ccard"><h3>Email</h3><div class="val" id="vEmail"></div>
+          <div class="acts"><a class="btn small" id="aEmail" href="#">Write</a><button class="btn small" data-copy="email" type="button">Copy</button></div></div>
+        <div class="ccard"><h3>Instagram</h3><div class="val" id="vIg"></div>
+          <div class="acts"><a class="btn small" id="aIg" href="#" target="_blank" rel="noopener">Open</a><button class="btn small" data-copy="ig" type="button">Copy</button></div></div>
+        <div class="ccard"><h3>WhatsApp</h3><div class="val" id="vWa"></div>
+          <div class="acts"><a class="btn small" id="aWa" href="#" target="_blank" rel="noopener">Chat</a><button class="btn small" data-copy="wa" type="button">Copy</button></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ARTWORK DETAIL -->
+<main id="workView" hidden>
+  <div class="wrap work">
+    <div class="crumb">
+      <a class="link" href="#gallery" data-nav>← Back to gallery</a>
+      <span class="eyebrow" id="wCount"></span>
+    </div>
+    <div class="work-grid">
+      <div class="work-img" id="wImgBox" role="button" tabindex="0" aria-label="View artwork fullscreen">
+        <img id="wImg" alt="">
+        <span class="fs-hint">Click to view fullscreen</span>
+      </div>
+      <div class="work-info">
+        <span class="eyebrow" id="wCat"></span>
+        <h1 id="wTitle"></h1>
+        <dl class="specs">
+          <div><dt>Medium</dt><dd id="wMedium"></dd></div>
+          <div><dt>Size</dt><dd id="wSize"></dd></div>
+          <div><dt>Year</dt><dd id="wYear"></dd></div>
+          <div><dt>Status</dt><dd id="wStatus"></dd></div>
+        </dl>
+        <p id="wDesc"></p>
+        <p id="wDesc2" style="color:var(--muted)"></p>
+        <div class="work-actions">
+          <button class="btn solid" id="wFs" type="button">View fullscreen</button>
+          <a class="btn" id="wEnq" href="#" target="_blank" rel="noopener">Enquire on WhatsApp</a>
+          <button class="btn" id="wSimilar" type="button">Commission similar</button>
+        </div>
+      </div>
+    </div>
+    <div class="pager">
+      <button id="wPrev" type="button"><small>← Previous</small><b></b></button>
+      <button id="wNext" type="button"><small>Next →</small><b></b></button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Darshini Art Gallery</span><span>All artworks shown are placeholders</span></div>
+</footer>
+
+<!-- FULLSCREEN VIEWER -->
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Fullscreen artwork viewer">
+  <div class="v-top">
+    <div class="t"><b id="vTitle"></b><span id="vSub"></span></div>
+    <div class="ctl">
+      <button class="icon-btn" id="vZoom" aria-label="Zoom in"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></button>
+      <button class="icon-btn" id="vFs" aria-label="Toggle device fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button class="icon-btn" id="vClose" aria-label="Close viewer"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+  </div>
+  <button class="icon-btn v-nav prev" id="vPrev" aria-label="Previous artwork"><svg viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M15 4l-8 8 8 8"/></svg></button>
+  <button class="icon-btn v-nav next" id="vNext" aria-label="Next artwork"><svg viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M9 4l8 8-8 8"/></svg></button>
+  <div class="v-stage" id="vStage"><img id="vImg" alt=""></div>
+  <div class="v-foot" id="vFoot"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ============ Studio details: edit these ============ */
+var STUDIO = {
+  name: "Darshini Art Gallery",
+  email: "hello@darshiniart.example",
+  instagram: "darshini.art.gallery",
+  whatsapp: "+91 70947 65334"
+};
+
+/* ============ Artworks ============
+   Each work is drawn procedurally as placeholder art. To use a real photo, add  src: "images/name.jpg"
+   (a file published beside the page, or a data: URL) and it replaces the placeholder. */
+var WORKS = [
+  { id:"gilded-tides", title:"Gilded Tides", cat:"gold", year:2026, medium:"Gold leaf and lime plaster on canvas", size:"120 × 180 cm", w:1000, h:1500, status:"Available",
+    d1:"Seventy hand-formed bowls of gold leaf drift outward from a quiet centre, each one dented and burnished so that it answers the light in its own way.",
+    d2:"The plaster ground is troweled in broad passes and left unpolished, giving the metal something soft to rest against." },
+  { id:"obsidian-orbit", title:"Obsidian Orbit", cat:"mono", year:2026, medium:"Black plaster, stone beads and pigment on panel", size:"100 × 150 cm", w:1000, h:1500, status:"Available",
+    d1:"Combed rings circle four dark planets while a river of stone beads runs between them. Black on black, the picture appears slowly as you walk past.",
+    d2:"Best hung where raking light from a window or a spotlight can pick out the ridges." },
+  { id:"silver-current", title:"Silver Current", cat:"mono", year:2025, medium:"Sculpted silver forms on white plaster", size:"90 × 150 cm", w:1000, h:1500, status:"Sold",
+    d1:"A shoal of polished forms curls through a white field like a wave about to break, with one stray leaving the centre of the frame.",
+    d2:"Each form is cast, leafed in silver and set by hand, so the shoal moves differently from every angle." },
+  { id:"solar-meridian", title:"Solar Meridian", cat:"colour", year:2025, medium:"Pigment and gold leaf, incised lines on board", size:"110 × 140 cm", w:1100, h:1375, status:"Available",
+    d1:"Thousands of fine lines race outward from a point of molten gold, cooling from amber to deep teal at the edges.",
+    d2:"The lines are cut and filled one at a time over about three weeks. The centre glows even in dim rooms." },
+  { id:"kintsugi-veins", title:"Kintsugi Veins", cat:"colour", year:2026, medium:"Red glitter resin on white plaster relief", size:"160 × 125 cm", w:1400, h:1100, status:"Available",
+    d1:"A branching seam of crimson runs through a pale field, set into the plaster like a repair that has become the point of the picture.",
+    d2:"The resin catches pinpoints of light, so the vein seems to move as the viewer does." },
+  { id:"gold-seam", title:"Gold Seam, diptych", cat:"gold", year:2025, medium:"Gold and copper leaf on black and white panels", size:"2 panels, 40 × 120 cm each", w:1400, h:1300, status:"Available",
+    d1:"Two tall panels trade black for white across a torn band of leaf. Together they read as one landscape; apart, as two quiet horizons.",
+    d2:"The leaf is torn rather than cut, so the edge is never repeated between the panels." },
+  { id:"quiet-horizon", title:"Quiet Horizon", cat:"colour", year:2024, medium:"Acrylic, mica and glass beads on canvas", size:"150 × 105 cm", w:1400, h:1000, status:"Sold",
+    d1:"Mist-grey veils fall toward a still, teal water line, and a spray of glittering particles hangs where the two meet.",
+    d2:"Painted with a long squeegee in a single day, then dusted while the surface was still open." },
+  { id:"falling-gold", title:"Falling Gold", cat:"gold", year:2026, medium:"Gold and silver leaf pellets on raw board", size:"175 × 100 cm", w:1400, h:800, status:"Available",
+    d1:"Golden drops stream down a bronze ground like rain caught in late sun, thinning to silver as they fall.",
+    d2:"Thousands of small leaf pellets are set one by one. Seen from across a room the surface shimmers." },
+  { id:"crimson-mandala", title:"Crimson Mandala", cat:"colour", year:2024, medium:"Foil and pigment on velvet-finish plaster", size:"90 × 135 cm", w:1000, h:1500, status:"Available",
+    d1:"A border of vines frames a central lotus. The pattern is laid in red foil over deep maroon, glowing like embers by candlelight.",
+    d2:"Inspired by woven carpets and temple ceilings, the piece is meant for a calm, warmly lit room." }
+];
+var FEATURED = ["gilded-tides","obsidian-orbit","silver-current","crimson-mandala"];
+var CATS = [["all","All works"],["gold","Gold & metallic"],["mono","Monochrome"],["colour","Colour"]];
+var CAT_NAME = { gold:"Gold & metallic", mono:"Monochrome", colour:"Colour" };
+var EXHIBITIONS = [
+  { up:true, date:"16 Jan – 14 Feb 2027", title:"Gilded Silence", venue:"The Meridian Gallery", city:"London, UK", note:"Solo exhibition of 24 new works in gold and plaster." },
+  { up:true, date:"6 – 9 Mar 2027", title:"Surface Tension", venue:"Ardent Art Fair", city:"Mumbai, India", note:"Group presentation, booth C14." },
+  { up:true, date:"22 Apr – 30 May 2027", title:"Orbit and Seam", venue:"Studio Nord", city:"Copenhagen, Denmark", note:"Two-person show with a ceramic artist." },
+  { up:false, date:"2 Oct – 7 Nov 2026", title:"Leaf & Light", venue:"Halcyon Contemporary", city:"Dubai, UAE", note:"Featured artist, autumn season." },
+  { up:false, date:"11 – 15 Mar 2026", title:"The Quiet Room", venue:"Ardent Art Fair", city:"Mumbai, India", note:"Solo booth presentation." },
+  { up:false, date:"5 Sep – 19 Oct 2025", title:"Plaster Works", venue:"Gallery Seven", city:"Bengaluru, India", note:"Group exhibition on contemporary relief." },
+  { up:false, date:"14 Feb – 30 Mar 2024", title:"First Light", venue:"Atelier Hall", city:"Pune, India", note:"Solo exhibition, 18 works." },
+  { up:false, date:"9 Nov – 2 Dec 2019", title:"Beginnings", venue:"Studio Open House", city:"Hyderabad, India", note:"First solo show." }
+];
+
+/* ============ Helpers ============ */
+var $ = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+function byId(id) { for (var i = 0; i < WORKS.length; i++) if (WORKS[i].id === id) return WORKS[i]; return null; }
+function idxOf(id) { for (var i = 0; i < WORKS.length; i++) if (WORKS[i].id === id) return i; return 0; }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+function digits(s) { return s.replace(/[^0-9]/g, ""); }
+var toastT;
+function toast(m) { var t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 2200); }
+function copyText(txt, ok) {
+  function fallback() {
+    var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast(ok); } catch (e) { toast("Select and copy manually"); }
+    document.body.removeChild(ta);
+  }
+  try { navigator.clipboard.writeText(txt).then(function () { toast(ok); }, fallback); } catch (e) { fallback(); }
+}
+
+/* ============ Procedural placeholder art ============ */
+function rng(seed) { var a = seed >>> 0; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function mk(w, h) { var c = document.createElement("canvas"); c.width = w; c.height = h; return [c, c.getContext("2d")]; }
+function grain(g, w, h, r, n, amt) {
+  for (var i = 0; i < n; i++) {
+    var x = r() * w, y = r() * h, s = 0.6 + r() * 1.8, l = r() > .5;
+    g.fillStyle = l ? "rgba(255,255,255," + (r() * amt) + ")" : "rgba(0,0,0," + (r() * amt) + ")";
+    g.fillRect(x, y, s, s);
+  }
+}
+function plaster(g, w, h, r, base, strokes) {
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  for (var i = 0; i < strokes; i++) {
+    var x = r() * w, y = r() * h, l = 60 + r() * 220, a = r() * Math.PI, th = 8 + r() * 30;
+    g.save(); g.translate(x, y); g.rotate(a * .15 + (r() > .5 ? .1 : -.1));
+    g.fillStyle = r() > .5 ? "rgba(255,255,255,.05)" : "rgba(0,0,0,.035)";
+    g.fillRect(0, 0, l, th); g.restore();
+  }
+}
+function gold(g, x0, y0, x1, y1, tone) {
+  var gr = g.createLinearGradient(x0, y0, x1, y1);
+  if (tone === "silver") { gr.addColorStop(0, "#F7F7F5"); gr.addColorStop(.35, "#B9B9B6"); gr.addColorStop(.6, "#E4E4E1"); gr.addColorStop(1, "#7A7A78"); }
+  else { gr.addColorStop(0, "#F6E0A0"); gr.addColorStop(.35, "#D1A650"); gr.addColorStop(.62, "#F0CD7E"); gr.addColorStop(1, "#8C6526"); }
+  return gr;
+}
+function bowl(g, x, y, rx, ry, rot, r, tone) {
+  g.save(); g.translate(x, y); g.rotate(rot);
+  g.shadowColor = "rgba(60,40,10,.38)"; g.shadowBlur = rx * .35; g.shadowOffsetX = rx * .12; g.shadowOffsetY = rx * .2;
+  g.beginPath(); g.ellipse(0, 0, rx, ry, 0, 0, 6.2832);
+  g.fillStyle = gold(g, -rx, -ry, rx, ry, tone); g.fill();
+  g.shadowColor = "transparent";
+  var rg = g.createRadialGradient(-rx * .3, -ry * .35, rx * .05, 0, 0, rx);
+  rg.addColorStop(0, "rgba(255,248,215,.75)"); rg.addColorStop(.5, "rgba(255,255,255,0)"); rg.addColorStop(1, "rgba(70,40,0,.45)");
+  g.fillStyle = rg; g.fill();
+  g.lineWidth = Math.max(1, rx * .04); g.strokeStyle = "rgba(90,60,10,.5)"; g.stroke();
+  for (var i = 0; i < rx * .5; i++) { var a = r() * 6.28, d = Math.sqrt(r()) * .85; g.fillStyle = r() > .5 ? "rgba(255,255,255,.28)" : "rgba(80,50,0,.22)"; g.fillRect(Math.cos(a) * d * rx, Math.sin(a) * d * ry, 1.6, 1.6); }
+  g.restore();
+}
+
+var PAINT = {
+  "gilded-tides": function (g, w, h) {
+    var r = rng(11); plaster(g, w, h, r, "#EDE3D1", 260); grain(g, w, h, r, 26000, .06);
+    var placed = [], cx = w * .5, cy = h * .5, tries = 0;
+    while (placed.length < 85 && tries < 6000) {
+      tries++;
+      var a = r() * 6.28, d = Math.pow(r(), .75) * Math.min(w, h) * .64 * (h / w * .8);
+      var x = cx + Math.cos(a) * d * .85, y = cy + Math.sin(a) * d * 1.18;
+      var s = 90 - (d / 480) * 60 + r() * 22; s = Math.max(22, s);
+      if (x < s * .6 || x > w - s * .6 || y < s * .6 || y > h - s * .6) continue;
+      var ok = true; for (var i = 0; i < placed.length; i++) { var p = placed[i], dd = Math.hypot(p[0] - x, p[1] - y); if (dd < (p[2] + s) * .86) { ok = false; break; } }
+      if (ok) placed.push([x, y, s]);
+    }
+    placed.sort(function (a, b) { return b[2] - a[2]; });
+    placed.forEach(function (p) { bowl(g, p[0], p[1], p[2], p[2] * (.82 + r() * .16), r() * 6.28, r); });
+    g.strokeStyle = "rgba(190,150,70,.9)"; g.lineWidth = 6; g.strokeRect(3, 3, w - 6, h - 6);
+  },
+  "obsidian-orbit": function (g, w, h) {
+    var r = rng(21); g.fillStyle = "#171615"; g.fillRect(0, 0, w, h); grain(g, w, h, r, 40000, .05);
+    var discs = [[-30, 380, 400], [1040, 190, 330], [1060, 1260, 430], [-20, 1420, 340]];
+    discs.forEach(function (d) {
+      var gr = g.createRadialGradient(d[0], d[1], d[2] * .2, d[0], d[1], d[2]); gr.addColorStop(0, "#1D1C1A"); gr.addColorStop(1, "#242220");
+      g.fillStyle = gr; g.beginPath(); g.arc(d[0], d[1], d[2], 0, 6.28); g.fill();
+      for (var k = 0; k < 28; k++) { g.strokeStyle = "rgba(" + (80 + r() * 50) + "," + (78 + r() * 48) + "," + (74 + r() * 44) + "," + (.25 + r() * .3) + ")"; g.lineWidth = 1.4 + r() * 1.6; g.beginPath(); g.arc(d[0], d[1], d[2] + 6 + k * 5.2, 0, 6.28); g.stroke(); }
+    });
+    var path = function (t) { var u = 1 - t; return [u*u*u*560 + 3*u*u*t*470 + 3*u*t*t*680 + t*t*t*330, u*u*u*70 + 3*u*u*t*520 + 3*u*t*t*950 + t*t*t*1380]; };
+    for (var i = 0; i < 1400; i++) { var t = r(), p = path(t), jx = (r() - .5) * 120 * (.3 + Math.sin(t * 3.14)), s = 2 + r() * 4.5; bead(g, p[0] + jx, p[1] + (r() - .5) * 30, s); }
+    for (var j = 0; j < 22; j++) { var t2 = j / 21, q = path(t2), s2 = 20 + 32 * Math.abs(Math.sin(t2 * 9.4 + .6)) + r() * 8; bead(g, q[0] + Math.sin(t2 * 11) * 10, q[1], s2); }
+    g.strokeStyle = "rgba(168,128,70,.9)"; g.lineWidth = 6; g.strokeRect(3, 3, w - 6, h - 6);
+    function bead(c, x, y, s) { var gr = c.createRadialGradient(x - s * .3, y - s * .35, s * .1, x, y, s); gr.addColorStop(0, "#5a5754"); gr.addColorStop(.6, "#2a2826"); gr.addColorStop(1, "#0f0e0d"); c.fillStyle = gr; c.beginPath(); c.arc(x, y, s, 0, 6.28); c.fill(); }
+  },
+  "silver-current": function (g, w, h) {
+    var r = rng(31); plaster(g, w, h, r, "#F2F2F0", 160); grain(g, w, h, r, 14000, .04);
+    var cx = w * .62, cy = h * .47, R = 400, items = [];
+    for (var i = 0; i < 64; i++) {
+      var t = i / 63, ang = 3.9 - t * 4.6 + (r() - .5) * .05, rad = R * (.78 + r() * .42) * (.9 + .25 * Math.sin(t * 3.14));
+      var x = cx + Math.cos(ang) * rad * .78, y = cy + Math.sin(ang) * rad * 1.5 * (h / w * .9);
+      items.push({ x: x, y: y, a: ang + 1.57 + (r() - .5) * .35, L: 70 + r() * 150, W: 22 + r() * 32 });
+    }
+    items.push({ x: w * .55, y: h * .5, a: -.9, L: 100, W: 34 });
+    items.forEach(function (it) {
+      g.save(); g.translate(it.x, it.y); g.rotate(it.a);
+      g.shadowColor = "rgba(0,0,0,.28)"; g.shadowBlur = 18; g.shadowOffsetX = 8; g.shadowOffsetY = 12;
+      g.beginPath(); g.ellipse(0, 0, it.W, it.L, 0, 0, 6.28);
+      var gr = g.createLinearGradient(-it.W, 0, it.W, 0); gr.addColorStop(0, "#6e6e6c"); gr.addColorStop(.25, "#e9e9e7"); gr.addColorStop(.5, "#a2a2a0"); gr.addColorStop(.78, "#f7f7f5"); gr.addColorStop(1, "#7c7c7a");
+      g.fillStyle = gr; g.fill(); g.restore();
+    });
+    g.strokeStyle = "rgba(40,40,40,.85)"; g.lineWidth = 10; g.strokeRect(5, 5, w - 10, h - 10);
+  },
+  "solar-meridian": function (g, w, h) {
+    var r = rng(41); g.fillStyle = "#0E2C3C"; g.fillRect(0, 0, w, h);
+    var cx = w * .5, cy = h * .52, maxR = Math.hypot(w, h) * .55;
+    for (var i = 0; i < 5200; i++) {
+      var a = r() * 6.2832, r0 = Math.pow(r(), 2.2) * maxR * .3, r1 = r0 + 60 + Math.pow(r(), 1.4) * maxR;
+      var mid = (r0 + r1) / 2, t = Math.min(1, mid / (maxR * .62)), goldMix = Math.pow(1 - t, 2.1) * (.55 + r() * .6);
+      var R, G, B;
+      if (r() < goldMix) { R = 205 + r() * 45; G = 150 + r() * 70; B = 60 + r() * 60; }
+      else { var k = r(); R = 20 + k * 90; G = 90 + k * 120; B = 120 + k * 100; if (r() < .06) { R = 120 + r() * 80; G = 90; B = 150; } }
+      g.strokeStyle = "rgba(" + (R | 0) + "," + (G | 0) + "," + (B | 0) + "," + (.35 + r() * .6) + ")"; g.lineWidth = .8 + r() * 2.2;
+      g.beginPath(); g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); g.stroke();
+    }
+    var gl = g.createRadialGradient(cx, cy, 0, cx, cy, 220); gl.addColorStop(0, "rgba(255,210,110,.55)"); gl.addColorStop(1, "rgba(255,210,110,0)"); g.fillStyle = gl; g.fillRect(0, 0, w, h);
+  },
+  "kintsugi-veins": function (g, w, h) {
+    var r = rng(51); plaster(g, w, h, r, "#F6F5F2", 200); grain(g, w, h, r, 18000, .04);
+    var branches = [
+      [[-20, 260], [260, 380], [520, 560], [760, 640]], [[1000, 120], [940, 330], [860, 520], [790, 680]],
+      [[760, 640], [1000, 600], [1220, 520], [1440, 580]], [[790, 680], [780, 850], [800, 1000], [830, 1130]],
+      [[520, 560], [400, 750], [300, 900], [180, 1010]], [[400, 200], [470, 330], [520, 440], [520, 560]]
+    ];
+    function bz(p, t) { var u = 1 - t; return [u*u*u*p[0][0] + 3*u*u*t*p[1][0] + 3*u*t*t*p[2][0] + t*t*t*p[3][0], u*u*u*p[0][1] + 3*u*u*t*p[1][1] + 3*u*t*t*p[2][1] + t*t*t*p[3][1]]; }
+    [0, 1].forEach(function (pass) {
+      branches.forEach(function (b, bi) {
+        for (var i = 0; i <= 160; i++) {
+          var t = i / 160, p = bz(b, t), rad = (bi === 5 ? 14 : 26) * (1 - Math.abs(t - .5) * .5) + (bi % 2 ? 6 : 10);
+          if (pass === 0) { g.fillStyle = "rgba(0,0,0,.09)"; g.beginPath(); g.arc(p[0] + 8, p[1] + 12, rad + 6, 0, 6.28); g.fill(); }
+          else { var gr = g.createRadialGradient(p[0] - rad * .3, p[1] - rad * .3, 1, p[0], p[1], rad); gr.addColorStop(0, "#D42838"); gr.addColorStop(1, "#8E0F1C"); g.fillStyle = gr; g.beginPath(); g.arc(p[0], p[1], rad, 0, 6.28); g.fill(); }
+        }
+      });
+    });
+    branches.forEach(function (b) { for (var i = 0; i < 700; i++) { var p = bz(b, r()), rr = 26 * Math.sqrt(r()), a = r() * 6.28; g.fillStyle = r() > .85 ? "rgba(255,225,170,.95)" : r() > .5 ? "rgba(255,120,130,.7)" : "rgba(60,0,8,.5)"; var s = .8 + r() * 2.2; g.fillRect(p[0] + Math.cos(a) * rr, p[1] + Math.sin(a) * rr, s, s); } });
+  },
+  "gold-seam": function (g, w, h) {
+    var r = rng(61); g.fillStyle = "#CDD3DC"; g.fillRect(0, 0, w, h); grain(g, w, h, r, 9000, .05);
+    var P = [{ x: 150, y: 190, ww: 500, hh: 1000, top: "#F1ECEA", bot: "#0D0D10", seam: .54 }, { x: 750, y: 90, ww: 500, hh: 1000, top: "#101012", bot: "#F1ECEA", seam: .5 }];
+    P.forEach(function (p, pi) {
+      g.save(); g.shadowColor = "rgba(0,0,0,.35)"; g.shadowBlur = 26; g.shadowOffsetX = 10; g.shadowOffsetY = 16; g.fillStyle = "#888"; g.fillRect(p.x, p.y, p.ww, p.hh); g.restore();
+      var sy = p.y + p.hh * p.seam; g.fillStyle = p.top; g.fillRect(p.x, p.y, p.ww, sy - p.y); g.fillStyle = p.bot; g.fillRect(p.x, sy, p.ww, p.y + p.hh - sy);
+      for (var i = 0; i < 1500; i++) {
+        var x = p.x + r() * p.ww, y = sy + (r() - .5) * 170 * (.5 + .5 * Math.sin(x * .02 + pi)) , s = 5 + r() * 26;
+        g.beginPath(); var a = r() * 6.28; g.moveTo(x, y);
+        for (var k = 1; k < 6; k++) { var aa = a + k * 1.05 + r() * .5, rr = s * (.4 + r() * .6); g.lineTo(x + Math.cos(aa) * rr, y + Math.sin(aa) * rr * .7); }
+        g.closePath(); var cu = (pi === 1 && r() > .45); g.fillStyle = cu ? "hsl(" + (22 + r() * 12) + ",60%," + (48 + r() * 22) + "%)" : "hsl(" + (42 + r() * 8) + ",70%," + (50 + r() * 25) + "%)"; g.globalAlpha = .55 + r() * .45; g.fill();
+      }
+      g.globalAlpha = 1;
+    });
+  },
+  "quiet-horizon": function (g, w, h) {
+    var r = rng(71); var bg = g.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, "#D8DBDA"); bg.addColorStop(.45, "#BFC7C8"); bg.addColorStop(.6, "#7FA0A4"); bg.addColorStop(1, "#4F7A84"); g.fillStyle = bg; g.fillRect(0, 0, w, h);
+    for (var i = 0; i < 700; i++) { var x = r() * w, ww = 2 + r() * 26, a = r() * .09; g.fillStyle = r() > .5 ? "rgba(255,255,255," + a + ")" : "rgba(30,60,70," + a + ")"; g.fillRect(x, 0, ww, h); }
+    for (var j = 0; j < 9000; j++) {
+      var gx = (r() + r() + r() - 1.5) / 1.5, gy = (r() + r() + r() + r() - 2) / 2, x = w / 2 + gx * w * .62, y = h * .5 + gy * h * .17, s = .6 + Math.pow(r(), 3) * 7;
+      var k = r(), col = k < .45 ? "rgba(70,205,205,.85)" : k < .75 ? "rgba(235,245,245,.9)" : k < .9 ? "rgba(90,110,115,.8)" : "rgba(30,40,45,.7)";
+      g.fillStyle = col; g.beginPath(); g.arc(x, y, s, 0, 6.28); g.fill();
+    }
+  },
+  "falling-gold": function (g, w, h) {
+    var r = rng(81); var bg = g.createLinearGradient(0, 0, w, h); bg.addColorStop(0, "#9F8658"); bg.addColorStop(1, "#7A6440"); g.fillStyle = bg; g.fillRect(0, 0, w, h); grain(g, w, h, r, 16000, .07);
+    var cols = 46;
+    for (var c = 0; c < cols; c++) {
+      var x0 = (c + .5) / cols * w + (r() - .5) * 18, len = h * (.3 + r() * .75), warm = r() > .55;
+      for (var i = 0; i < 70 + len / 6; i++) {
+        var t = Math.pow(r(), 1.5), y = t * len - 20, x = x0 + (r() - .5) * (26 - t * 16), s = 5 + (1 - t) * 9 + r() * 6;
+        var gr = g.createRadialGradient(x - s * .3, y - s * .3, 1, x, y, s);
+        if (warm) { gr.addColorStop(0, "#FFF1B8"); gr.addColorStop(.5, "#E3B84D"); gr.addColorStop(1, "#8F6A1D"); } else { gr.addColorStop(0, "#FFFDF4"); gr.addColorStop(.55, "#D9CFAE"); gr.addColorStop(1, "#8F8465"); }
+        g.shadowColor = "rgba(0,0,0,.3)"; g.shadowBlur = 5; g.shadowOffsetY = 3; g.fillStyle = gr; g.beginPath(); g.arc(x, y, s, 0, 6.28); g.fill();
+      }
+    }
+    g.shadowColor = "transparent";
+  },
+  "crimson-mandala": function (g, w, h) {
+    var r = rng(91); g.fillStyle = "#58141E"; g.fillRect(0, 0, w, h); grain(g, w, h, r, 40000, .06);
+    var red = function (x0, y0, x1, y1) { var gr = g.createLinearGradient(x0, y0, x1, y1); gr.addColorStop(0, "#FF5062"); gr.addColorStop(.5, "#B3101F"); gr.addColorStop(1, "#E02A3C"); return gr; };
+    var cx = w / 2, cy = h / 2;
+    function petal(len, wid) { g.beginPath(); g.moveTo(0, 0); g.bezierCurveTo(wid, len * .3, wid * .7, len * .8, 0, len); g.bezierCurveTo(-wid * .7, len * .8, -wid, len * .3, 0, 0); g.closePath(); }
+    var rings = [[16, 110, 30, 0], [24, 200, 40, 40], [16, 290, 52, 80], [32, 360, 36, 120], [24, 440, 46, 170]];
+    rings.forEach(function (rg, k) {
+      for (var i = 0; i < rg[0]; i++) {
+        g.save(); g.translate(cx, cy); g.rotate(i / rg[0] * 6.2832 + k * .13); g.translate(0, rg[3] * 0.0 + 14 + k * 0);
+        g.fillStyle = red(-rg[2], 0, rg[2], rg[1]); petal(rg[1] * (k > 2 ? 1 : 1) , rg[2]); g.fill();
+        g.globalCompositeOperation = "destination-out"; g.globalAlpha = .55; g.scale(.45, .6); g.translate(0, rg[1] * .22); petal(rg[1], rg[2]); g.fill(); g.restore(); g.globalCompositeOperation = "source-over"; g.globalAlpha = 1;
+      }
+      for (var j = 0; j < rg[0] * 2; j++) { var a = j / (rg[0] * 2) * 6.2832 + k * .13, rr = rg[1] + 26; g.fillStyle = "rgba(240,60,80,.9)"; g.beginPath(); g.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 3 + (k % 2) * 2, 0, 6.28); g.fill(); }
+    });
+    var N = 72, m = 70;
+    for (var i = 0; i < N; i++) {
+      var t = i / N, per = [[m + t * (w - 2 * m), m], [w - m, m + t * (h - 2 * m)], [w - m - t * (w - 2 * m), h - m], [m, h - m - t * (h - 2 * m)]];
+      per.forEach(function (p, side) { g.save(); g.translate(p[0], p[1]); g.rotate(side * 1.5708 + (i % 2 ? .6 : -.6)); g.fillStyle = red(0, 0, 20, 40); petal(36, 11); g.fill(); g.restore(); });
+    }
+    g.strokeStyle = "rgba(220,60,75,.85)"; g.lineWidth = 3; g.strokeRect(m - 26, m - 26, w - 2 * m + 52, h - 2 * m + 52); g.strokeRect(m + 40, m + 40, w - 2 * m - 80, h - 2 * m - 80);
+    g.strokeStyle = "rgba(205,175,115,.95)"; g.lineWidth = 10; g.strokeRect(5, 5, w - 10, h - 10);
+  },
+  "portrait": function (g, w, h) {
+    var r = rng(101); plaster(g, w, h, r, "#D9D1C2", 300); grain(g, w, h, r, 22000, .07);
+    for (var i = 0; i < 18; i++) bowl(g, w * (.2 + r() * .6), h * (.15 + r() * .7), 30 + r() * 60, 30 + r() * 50, r() * 6, r, "gold");
+    var gr = g.createLinearGradient(0, h * .5, 0, h); gr.addColorStop(0, "rgba(30,28,25,0)"); gr.addColorStop(1, "rgba(30,28,25,.55)"); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  }
+};
+
+var URLS = {};
+function artUrl(id) {
+  if (URLS[id]) return URLS[id];
+  var wk = byId(id) || { w: 800, h: 1000 };
+  if (wk.src) { URLS[id] = wk.src; return wk.src; }
+  var W = id === "portrait" ? 800 : wk.w, H = id === "portrait" ? 1000 : wk.h;
+  var pair = mk(W, H); PAINT[id](pair[1], W, H);
+  var u; try { u = pair[0].toDataURL("image/jpeg", .9); } catch (e) { u = ""; }
+  URLS[id] = u; return u;
+}
+var queue = [], busy = false;
+function whenReady(id, cb) { queue.push([id, cb]); if (!busy) pump(); }
+function pump() { busy = true; var item = queue.shift(); if (!item) { busy = false; return; } setTimeout(function () { item[1](artUrl(item[0])); pump(); }, 0); }
+
+/* ============ Contact info ============ */
+$("#vEmail").textContent = STUDIO.email; $("#vIg").textContent = "@" + STUDIO.instagram; $("#vWa").textContent = STUDIO.whatsapp;
+$("#aEmail").href = "mailto:" + STUDIO.email; $("#aIg").href = "https://instagram.com/" + STUDIO.instagram; $("#aWa").href = "https://wa.me/" + digits(STUDIO.whatsapp);
+$$("[data-copy]").forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-copy"); copyText(k === "email" ? STUDIO.email : k === "ig" ? "@" + STUDIO.instagram : STUDIO.whatsapp, "Copied"); }); });
+
+/* ============ Hero featured ============ */
+var fi = 0, stage = $("#stage"), timer;
+var fImgs = FEATURED.map(function (id) { var im = document.createElement("img"); im.alt = byId(id).title + ", featured painting"; stage.appendChild(im); whenReady(id, function (u) { im.src = u; }); return im; });
+var dotsEl = $("#stageDots");
+FEATURED.forEach(function (id, i) { var b = document.createElement("button"); b.setAttribute("aria-label", "Show " + byId(id).title); b.addEventListener("click", function () { showFeatured(i, true); }); dotsEl.appendChild(b); });
+function showFeatured(i, manual) {
+  fi = i; var wk = byId(FEATURED[i]);
+  fImgs.forEach(function (im, k) { im.classList.toggle("show", k === i); });
+  $$("button", dotsEl).forEach(function (b, k) { b.classList.toggle("on", k === i); });
+  $("#stageTitle").textContent = wk.title; $("#stageMeta").textContent = wk.medium + " · " + wk.size;
+  if (manual) startAuto();
+}
+function startAuto() { clearTimeout(timer); if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; timer = setTimeout(function () { showFeatured((fi + 1) % FEATURED.length); startAuto(); }, 7000); }
+showFeatured(0); startAuto();
+stage.addEventListener("click", function () { openViewer(FEATURED[fi]); });
+stage.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openViewer(FEATURED[fi]); } });
+$("#portraitImg").setAttribute("data-id", "portrait"); whenReady("portrait", function (u) { $("#portraitImg").src = u; });
+
+/* ============ Gallery ============ */
+var curCat = "all";
+var filtersEl = $("#filters"), masonry = $("#masonry");
+CATS.forEach(function (c) { var b = document.createElement("button"); b.textContent = c[1]; b.setAttribute("data-cat", c[0]); b.setAttribute("role", "tab"); if (c[0] === "all") b.className = "on"; filtersEl.appendChild(b); });
+filtersEl.addEventListener("click", function (e) {
+  var b = e.target.closest("button"); if (!b) return; curCat = b.getAttribute("data-cat");
+  $$("button", filtersEl).forEach(function (x) { x.classList.toggle("on", x === b); });
+  $$(".card", masonry).forEach(function (cd) { cd.hidden = !(curCat === "all" || cd.getAttribute("data-cat") === curCat); });
+});
+var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }); }, { threshold: .08 }) : null;
+WORKS.forEach(function (wk) {
+  var card = document.createElement("button"); card.className = "card"; card.type = "button"; card.setAttribute("data-cat", wk.cat); card.setAttribute("aria-label", "Open " + wk.title);
+  card.innerHTML = '<div class="frame" style="aspect-ratio:' + wk.w + " / " + wk.h + '"><img alt="' + esc(wk.title) + ', ' + esc(wk.medium) + '" loading="lazy"><span class="view">View artwork</span></div>' +
+    '<div class="meta"><h3>' + esc(wk.title) + '</h3><span>' + esc(wk.size) + (wk.status === "Sold" ? ' · <i class="sold">Sold</i>' : '') + '</span></div>';
+  var im = $("img", card); whenReady(wk.id, function (u) { im.src = u; im.onload = function () { im.classList.add("loaded"); }; if (im.complete) im.classList.add("loaded"); });
+  card.addEventListener("click", function () { location.hash = "work-" + wk.id; });
+  masonry.appendChild(card); if (io) io.observe(card); else card.classList.add("in");
+});
+setTimeout(function () { $$(".card", masonry).forEach(function (c) { c.classList.add("in"); }); }, 2500);
+
+/* ============ Artwork detail ============ */
+var curWork = null;
+function showWork(id) {
+  var wk = byId(id); if (!wk) return false; curWork = id; var i = idxOf(id);
+  $("#main").hidden = true; $("#workView").hidden = false;
+  $("#wTitle").textContent = wk.title; $("#wCat").textContent = CAT_NAME[wk.cat]; $("#wCount").textContent = (i + 1) + " of " + WORKS.length;
+  $("#wMedium").textContent = wk.medium; $("#wSize").textContent = wk.size; $("#wYear").textContent = wk.year; $("#wStatus").textContent = wk.status === "Sold" ? "Sold, similar works can be commissioned" : "Available, price on request";
+  $("#wDesc").textContent = wk.d1; $("#wDesc2").textContent = wk.d2;
+  var im = $("#wImg"); im.alt = wk.title + ", " + wk.medium; im.removeAttribute("src"); im.style.aspectRatio = wk.w + " / " + wk.h; whenReady(wk.id, function (u) { if (curWork === wk.id) im.src = u; });
+  $("#wEnq").href = "https://wa.me/" + digits(STUDIO.whatsapp) + "?text=" + encodeURIComponent("Hello, I'm interested in \"" + wk.title + "\" (" + wk.size + "). Could you share details?");
+  var p = WORKS[(i + WORKS.length - 1) % WORKS.length], n = WORKS[(i + 1) % WORKS.length];
+  $("#wPrev b").textContent = p.title; $("#wNext b").textContent = n.title; $("#wPrev").onclick = function () { location.hash = "work-" + p.id; }; $("#wNext").onclick = function () { location.hash = "work-" + n.id; };
+  $("#wSimilar").onclick = function () { $("#cBrief").value = "I'd love a work inspired by \"" + wk.title + "\" (" + wk.medium + ", about " + wk.size + "). "; var map = { gold: "s1", mono: "s2", colour: "s3" }; $("#" + map[wk.cat]).checked = true; location.hash = "commissions"; setTimeout(function () { $("#cBrief").focus({ preventScroll: true }); }, 700); };
+  document.title = wk.title + " · Darshini Art Gallery"; window.scrollTo(0, 0); return true;
+}
+function leaveWork() { $("#workView").hidden = true; $("#main").hidden = false; curWork = null; document.title = "Darshini Art Gallery"; }
+$("#wImgBox").addEventListener("click", function () { if (curWork) openViewer(curWork); });
+$("#wImgBox").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (curWork) openViewer(curWork); } });
+$("#wFs").addEventListener("click", function () { if (curWork) openViewer(curWork); });
+
+/* ============ Fullscreen viewer ============ */
+var vi = 0, zoomed = false, viewer = $("#viewer"), vImg = $("#vImg"), vStage = $("#vStage"), lastFocus = null;
+function vShow(i) {
+  vi = (i + WORKS.length) % WORKS.length; var wk = WORKS[vi];
+  setZoom(false); vImg.style.opacity = 0; vImg.alt = wk.title;
+  whenReady(wk.id, function (u) { if (WORKS[vi].id === wk.id) { vImg.src = u; vImg.style.opacity = 1; } });
+  $("#vTitle").textContent = wk.title; $("#vSub").textContent = wk.medium + " · " + wk.size; $("#vFoot").textContent = (vi + 1) + " / " + WORKS.length + "   ·   click image to zoom";
+}
+function openViewer(id) { lastFocus = document.activeElement; viewer.classList.add("open"); document.body.style.overflow = "hidden"; vShow(idxOf(id)); $("#vClose").focus(); }
+function closeViewer() { if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} } viewer.classList.remove("open"); document.body.style.overflow = ""; if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); }
+function setZoom(z) { zoomed = z; vStage.classList.toggle("zoom", z); $("#vZoom").setAttribute("aria-label", z ? "Zoom out" : "Zoom in"); if (!z) vImg.style.transformOrigin = "50% 50%"; }
+function originFrom(e) { var rc = vImg.getBoundingClientRect(); var x = Math.min(100, Math.max(0, (e.clientX - rc.left) / rc.width * 100)), y = Math.min(100, Math.max(0, (e.clientY - rc.top) / rc.height * 100)); vImg.style.transformOrigin = x + "% " + y + "%"; }
+vStage.addEventListener("click", function (e) { if (!zoomed) { var rc = vImg.getBoundingClientRect(); vImg.style.transformOrigin = ((e.clientX - rc.left) / rc.width * 100) + "% " + ((e.clientY - rc.top) / rc.height * 100) + "%"; } setZoom(!zoomed); });
+vStage.addEventListener("pointermove", function (e) { if (zoomed && e.pointerType === "mouse") { var rc = vStage.getBoundingClientRect(); vImg.style.transformOrigin = ((e.clientX - rc.left) / rc.width * 100) + "% " + ((e.clientY - rc.top) / rc.height * 100) + "%"; } });
+$("#vZoom").addEventListener("click", function () { setZoom(!zoomed); });
+$("#vClose").addEventListener("click", closeViewer);
+$("#vPrev").addEventListener("click", function () { vShow(vi - 1); });
+$("#vNext").addEventListener("click", function () { vShow(vi + 1); });
+$("#vFs").addEventListener("click", function () { try { if (document.fullscreenElement) document.exitFullscreen(); else viewer.requestFullscreen().catch(function () { toast("Fullscreen is not available here"); }); } catch (e) { toast("Fullscreen is not available here"); } });
+var tx = null; viewer.addEventListener("touchstart", function (e) { tx = e.touches.length === 1 && !zoomed ? e.touches[0].clientX : null; }, { passive: true });
+viewer.addEventListener("touchend", function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) vShow(vi + (dx < 0 ? 1 : -1)); tx = null; });
+document.addEventListener("keydown", function (e) {
+  if (viewer.classList.contains("open")) {
+    if (e.key === "Escape") closeViewer(); else if (e.key === "ArrowRight") vShow(vi + 1); else if (e.key === "ArrowLeft") vShow(vi - 1); else if (e.key === "+" || e.key === "=" ) setZoom(true); else if (e.key === "-") setZoom(false);
+  } else if (e.key === "Escape") closeMenu();
+});
+
+/* ============ Menu, theme, header ============ */
+var menu = $("#menu");
+function openMenu() { menu.classList.add("open"); menu.setAttribute("aria-hidden", "false"); $("#burger").setAttribute("aria-expanded", "true"); document.body.style.overflow = "hidden"; }
+function closeMenu() { menu.classList.remove("open"); menu.setAttribute("aria-hidden", "true"); $("#burger").setAttribute("aria-expanded", "false"); if (!viewer.classList.contains("open")) document.body.style.overflow = ""; }
+$("#burger").addEventListener("click", openMenu); $("#menuClose").addEventListener("click", closeMenu);
+$$("[data-nav]").forEach(function (a) { a.addEventListener("click", function () { closeMenu(); if (a.getAttribute("href") === location.hash) route(); }); });
+$("#themeBtn").addEventListener("click", function () {
+  var root = document.documentElement, dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  root.setAttribute("data-theme", dark ? "light" : "dark");
+});
+var hdr = $("#siteHeader");
+window.addEventListener("scroll", function () { hdr.classList.toggle("scrolled", window.scrollY > 10); highlight(); }, { passive: true });
+function highlight() {
+  if (curWork) { $$(".nav a").forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#gallery"); }); return; }
+  var cur = "home"; ["home", "about", "gallery", "commissions", "exhibitions", "contact"].forEach(function (id) { var el = document.getElementById(id); if (el && el.getBoundingClientRect().top < window.innerHeight * .4) cur = id; });
+  $$(".nav a").forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + cur); });
+}
+
+/* ============ Exhibitions ============ */
+var exTab = "up";
+function renderEx() {
+  var list = EXHIBITIONS.filter(function (e) { return (exTab === "up") === e.up; });
+  $("#exList").innerHTML = list.map(function (e) { return '<article class="ex"><time>' + esc(e.date) + '</time><div><h3>' + esc(e.title) + (e.up ? '<span class="tag">Upcoming</span>' : '') + '</h3><p>' + esc(e.note) + '</p></div><div class="where">' + esc(e.venue) + '<small>' + esc(e.city) + '</small></div></article>'; }).join("");
+}
+$("#exTabs").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; exTab = b.getAttribute("data-tab"); $$("#exTabs button").forEach(function (x) { x.classList.toggle("on", x === b); }); renderEx(); });
+renderEx();
+
+/* ============ Commission form ============ */
+var form = $("#comForm"), files = [];
+var d = new Date(); d.setDate(d.getDate() + 30); $("#cDate").min = new Date().toISOString().slice(0, 10);
+$("#cFiles").addEventListener("change", function (e) {
+  var th = $("#thumbs"); th.innerHTML = ""; files = Array.prototype.slice.call(e.target.files).slice(0, 6);
+  files.forEach(function (f) { var fr = new FileReader(); fr.onload = function () { var im = document.createElement("img"); im.src = fr.result; im.alt = f.name; th.appendChild(im); }; fr.readAsDataURL(f); });
+});
+function setErr(k, m) { var el = $('[data-err="' + k + '"]'); if (el) el.textContent = m || ""; }
+form.addEventListener("submit", function (e) {
+  e.preventDefault(); var ok = true;
+  var name = $("#cName").value.trim(), email = $("#cEmail").value.trim(), brief = $("#cBrief").value.trim();
+  setErr("cName", name ? "" : "Please enter your name."); if (!name) ok = false;
+  var em = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); setErr("cEmail", em ? "" : "Enter a valid email so we can reply."); if (!em) ok = false;
+  setErr("cBrief", brief.length >= 10 ? "" : "Tell us a little about the space or idea."); if (brief.length < 10) ok = false;
+  if (!ok) { var first = $(".err:not(:empty)", form); if (first) first.parentNode.querySelector("input,textarea").focus(); return; }
+  var style = ($('input[name="style"]:checked') || {}).value || "";
+  var txt = "Commission request\nName: " + name + "\nEmail: " + email + ($("#cPhone").value.trim() ? "\nWhatsApp: " + $("#cPhone").value.trim() : "") +
+    "\nStyle: " + style + "\nSize: " + $("#cSize").value + "\nBudget: " + $("#cBudget").value + ($("#cDate").value ? "\nNeeded by: " + $("#cDate").value : "") +
+    "\n\n" + brief + (files.length ? "\n\n(" + files.length + " reference image" + (files.length > 1 ? "s" : "") + " to attach)" : "");
+  $("#comText").textContent = txt;
+  $("#comWa").href = "https://wa.me/" + digits(STUDIO.whatsapp) + "?text=" + encodeURIComponent(txt);
+  $("#comMail").href = "mailto:" + STUDIO.email + "?subject=" + encodeURIComponent("Commission request from " + name) + "&body=" + encodeURIComponent(txt);
+  form.hidden = true; $("#comResult").hidden = false; $("#comResult").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+$("#comCopy").addEventListener("click", function () { copyText($("#comText").textContent, "Request copied"); });
+$("#comEdit").addEventListener("click", function () { $("#comResult").hidden = true; form.hidden = false; });
+
+/* ============ Routing (hash) ============ */
+function route() {
+  var h = location.hash.replace("#", "");
+  if (h.indexOf("work-") === 0) { if (showWork(h.slice(5))) { highlight(); return; } h = "gallery"; }
+  if (curWork || !$("#workView").hidden) leaveWork();
+  closeMenu();
+  var el = h && document.getElementById(h);
+  setTimeout(function () { if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); else window.scrollTo(0, 0); highlight(); }, 30);
+}
+window.addEventListener("hashchange", route);
+if (location.hash) route(); else highlight();
+</script>
+
+</body>
+</html>
